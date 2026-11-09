@@ -76,7 +76,7 @@ Os dados na planilha podem alimentar um dashboard (ex.: Looker Studio) para visu
 
 > O módulo de buzzer usado responde com **lógica invertida** (nível baixo aciona o som), por isso o código usa `active_high=False` no gpiozero. Se o seu módulo for "normal", troque para `True` em `ControleBuzzer`.
 >
-> Detalhes de hardware, software e método: [Materiais e Métodos (PDF)](docs/materiais-e-metodos.pdf).
+> Esquemático elétrico: [PDF](docs/esquematico_buzzer_raspberry_pi.pdf). Detalhes de hardware, software e método: [Materiais e Métodos (PDF)](docs/materiais-e-metodos.pdf).
 
 | Montagem completa | Módulo do buzzer na protoboard |
 |---|---|
@@ -103,7 +103,7 @@ Os dados na planilha podem alimentar um dashboard (ex.: Looker Studio) para visu
 │   └── config.example.py   # Modelo de configuração da nuvem (copie para config.py)
 ├── models/
 │   └── best.tflite         # Modelo treinado
-├── docs/                   # Materiais e Métodos (PDF) e imagens
+├── docs/                   # Esquemático, Materiais e Métodos (PDFs) e imagens
 ├── requirements.txt
 ├── LICENSE
 └── README.md
