@@ -16,6 +16,7 @@
 - [Hardware](#hardware)
 - [Software e modelo](#software-e-modelo)
 - [Estrutura do repositório](#estrutura-do-repositório)
+- [Passo a passo para reproduzir](#passo-a-passo-para-reproduzir)
 - [Como rodar](#como-rodar)
 - [Resultados](#resultados)
 - [Limitações](#limitações)
@@ -106,6 +107,21 @@ Os dados na planilha podem alimentar um dashboard (ex.: Looker Studio) para visu
 └── README.md
 ```
 
+## Passo a passo para reproduzir
+
+Resumo do caminho completo, do zero até o sistema rodando. O repositório já inclui o modelo treinado, então quem só quer testar pode ir direto ao passo 6.
+
+1. **Materiais:** Raspberry Pi 3B (1 GB) com cartão SD e fonte micro-USB, webcam USB, módulo de buzzer ativo (3 pinos: VCC, I/O e GND), placa de extensão GPIO, protoboard e jumpers.
+2. **Sistema do Pi:** instale o Raspberry Pi OS e habilite o SSH (opcional, mas facilita copiar arquivos e acessar remotamente).
+3. **Montagem:** ligue o módulo do buzzer ao Pi passando pela placa de extensão e pela protoboard. O pino de sinal (I/O) vai no **GPIO17 (BCM 17)**; VCC e GND do módulo vão em pinos de alimentação e terra do header de 40 pinos (confira a tensão aceita pelo seu módulo). O módulo usado aqui tem **lógica invertida**, por isso o código usa `active_high=False`.
+4. **Dataset:** fotografe pessoas com e sem capacete e colete, variando iluminação e ângulo, e anote as 4 classes (`colete_capacete`, `nenhum_EPI`, `so_capacete`, `so_colete`) no **Roboflow**, exportando em **Pascal VOC**. Use os nomes das classes exatamente assim.
+5. **Treino:** no **Google Colab**, use o `tflite-model-maker` para treinar um **EfficientDet-Lite0** (ele exige versões antigas do Python, então use um ambiente isolado com Python 3.9, por exemplo via Miniconda). Avalie, exporte o `best.tflite` e salve uma cópia no Google Drive para não perder se a sessão cair.
+6. **Deploy no Pi:** clone este repositório no Pi (ou copie os arquivos) e confirme o modelo em `models/best.tflite`. Se você treinou o seu, copie-o para lá, por exemplo com `scp best.tflite usuario@IP_DO_PI:caminho/do/repo/models/`.
+7. **Dependências:** `pip install -r requirements.txt --break-system-packages` (no Pi, o OpenCV costuma ser mais fácil via `sudo apt install python3-opencv`).
+8. **Rodar:** `python3 src/detect.py` (pressione `q` na janela de vídeo para sair).
+9. **Ajustes (se você retreinou):** confira a ordem das classes em `LABELS`, o `CONFIDENCE_THRESHOLD` e os tempos `TEMPO_CONFIRMACAO` e `TEMPO_COOLDOWN` no `src/detect.py`.
+10. **Nuvem (opcional):** configure o Google Sheets/Drive como descrito na seção abaixo.
+
 ## Como rodar
 
 > Testado em Raspberry Pi 3B com Raspberry Pi OS e Python 3.
@@ -142,6 +158,7 @@ Você precisa de uma *Service Account* (Sheets) e de um cliente OAuth (Drive) do
 
 - Sistema **funcional em hardware real**: detecção das 4 classes, máquina de estados, padrões de buzzer (intermitente/contínuo), registro local e sincronização com a nuvem, inclusive **recuperação após queda de internet**.
 - Métricas de avaliação reportadas pelo `tflite-model-maker` ao final do treino: **AP50 = 100%**, **AP75 = 94,7%**, **AP = 78,7%**.
+  - *Atenção:* essas métricas foram medidas sobre o próprio conjunto de dados do projeto, sem um conjunto de teste separado confirmado. Elas indicam o ajuste do modelo aos dados e **não garantem** o mesmo desempenho em imagens novas.
 - Testado em ambiente doméstico e em ambiente externo.
 
 ## Limitações
@@ -170,6 +187,7 @@ Foco em cibersegurança (Blue Team / SOC)
 - **False-positive control:** 4-state machine (NORMAL → SUSPEITA → CONFIRMADA → COOLDOWN); a violation must persist for 2 s to be confirmed.
 - **Logging:** SQLite + photo snapshot; a background thread syncs pending records to Google Sheets/Drive, offline-tolerant.
 - **Why not MediaPipe:** crashes with `Illegal instruction` on the Pi 3B's BCM2837 (no AES hardware instructions) — solved by using the plain TFLite interpreter and reading output tensors by shape.
+- **Reproduce:** wire the buzzer to GPIO17 → label 4 classes in Roboflow (Pascal VOC) → train EfficientDet-Lite0 with `tflite-model-maker` in Colab → copy `best.tflite` to the Pi → run (see "Passo a passo para reproduzir").
 - **Run:** `pip install -r requirements.txt` → put the model in `models/best.tflite` → `python3 src/detect.py`. Cloud sync is optional (`src/config.example.py`).
 - **License:** MIT.
 

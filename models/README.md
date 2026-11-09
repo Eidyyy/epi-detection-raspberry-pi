@@ -29,6 +29,8 @@ Reportadas pelo `tflite-model-maker` ao fim do treino / reported by `tflite-mode
 - AP75 = 94,7%
 - AP = 78,7%
 
+> Atenção / Note: medidas sobre o próprio conjunto de dados do projeto, sem um conjunto de teste separado confirmado. Indicam o ajuste aos dados, não garantem o mesmo desempenho em imagens novas. / Measured on the project's own dataset, with no confirmed separate test set: they reflect fit to the data and do not guarantee the same performance on new images.
+
 ## Uso / Usage
 
 O `src/detect.py` carrega `models/best.tflite` automaticamente (`MODEL_PATH`). Para usar outro modelo, substitua este arquivo mantendo a ordem das classes.
