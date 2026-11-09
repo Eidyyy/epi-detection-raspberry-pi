@@ -1,0 +1,29 @@
+# --- Segredos / credenciais (NUNCA commitar) ---
+credentials.json
+oauth_credentials.json
+token.json
+client_secret*.json
+config.py
+.env
+
+# --- Dados gerados em execução (fotos de pessoas + banco local) ---
+src/violacoes.db
+src/fotos_violacoes/
+*.db
+fotos_violacoes/
+
+# --- Dataset de treino (fica de fora: imagens de pessoas) ---
+dataset/
+*.xml
+
+# --- Python ---
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# --- Sistema / editor ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

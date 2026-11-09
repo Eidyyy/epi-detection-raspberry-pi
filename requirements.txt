@@ -1,0 +1,17 @@
+# Raspberry Pi 3B (Raspberry Pi OS). Dica: o OpenCV costuma ser mais fácil via apt:
+#   sudo apt install python3-opencv
+# Em PCs/outros ambientes: pip install opencv-python
+opencv-python
+numpy
+
+# Interpretador TFLite (um dos dois; o detect.py tenta tflite-runtime -> ai-edge-litert -> tensorflow)
+ai-edge-litert
+
+# Buzzer (GPIO) — só no Raspberry Pi
+gpiozero
+
+# Nuvem (opcional): Google Sheets + Drive
+gspread
+google-auth
+google-auth-oauthlib
+google-api-python-client
