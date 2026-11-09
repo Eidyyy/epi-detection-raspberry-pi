@@ -75,6 +75,8 @@ Os dados na planilha podem alimentar um dashboard (ex.: Looker Studio) para visu
 - Placa de extensão GPIO + protoboard
 
 > O módulo de buzzer usado responde com **lógica invertida** (nível baixo aciona o som), por isso o código usa `active_high=False` no gpiozero. Se o seu módulo for "normal", troque para `True` em `ControleBuzzer`.
+>
+> Detalhes de hardware, software e método: [Materiais e Métodos (PDF)](docs/materiais-e-metodos.pdf).
 
 | Montagem completa | Módulo do buzzer na protoboard |
 |---|---|
@@ -101,7 +103,7 @@ Os dados na planilha podem alimentar um dashboard (ex.: Looker Studio) para visu
 │   └── config.example.py   # Modelo de configuração da nuvem (copie para config.py)
 ├── models/
 │   └── best.tflite         # Modelo treinado
-├── docs/                   # Imagens do projeto
+├── docs/                   # Materiais e Métodos (PDF) e imagens
 ├── requirements.txt
 ├── LICENSE
 └── README.md
@@ -113,7 +115,7 @@ Resumo do caminho completo, do zero até o sistema rodando. O repositório já i
 
 1. **Materiais:** Raspberry Pi 3B (1 GB) com cartão SD e fonte micro-USB, webcam USB, módulo de buzzer ativo (3 pinos: VCC, I/O e GND), placa de extensão GPIO, protoboard e jumpers.
 2. **Sistema do Pi:** instale o Raspberry Pi OS e habilite o SSH (opcional, mas facilita copiar arquivos e acessar remotamente).
-3. **Montagem:** ligue o módulo do buzzer ao Pi passando pela placa de extensão e pela protoboard. O pino de sinal (I/O) vai no **GPIO17 (BCM 17)**; VCC e GND do módulo vão em pinos de alimentação e terra do header de 40 pinos (confira a tensão aceita pelo seu módulo). O módulo usado aqui tem **lógica invertida**, por isso o código usa `active_high=False`.
+3. **Montagem:** ligue o módulo do buzzer ao Pi passando pela placa de extensão e pela protoboard. O pino de sinal (I/O) vai no **GPIO17 (BCM 17, pino físico 11)**; VCC no pino físico 2 (5 V) e GND no pino físico 6 (confira a tensão aceita pelo seu módulo). O módulo usado aqui tem **lógica invertida**, por isso o código usa `active_high=False`.
 4. **Dataset:** fotografe pessoas com e sem capacete e colete, variando iluminação e ângulo, e anote as 4 classes (`colete_capacete`, `nenhum_EPI`, `so_capacete`, `so_colete`) no **Roboflow**, exportando em **Pascal VOC**. Use os nomes das classes exatamente assim.
 5. **Treino:** no **Google Colab**, use o `tflite-model-maker` para treinar um **EfficientDet-Lite0** (ele exige versões antigas do Python, então use um ambiente isolado com Python 3.9, por exemplo via Miniconda). Avalie, exporte o `best.tflite` e salve uma cópia no Google Drive para não perder se a sessão cair.
 6. **Deploy no Pi:** clone este repositório no Pi (ou copie os arquivos) e confirme o modelo em `models/best.tflite`. Se você treinou o seu, copie-o para lá, por exemplo com `scp best.tflite usuario@IP_DO_PI:caminho/do/repo/models/`.
